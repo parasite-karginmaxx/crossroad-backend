@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: crossroad-backend
+    env: java
+    plan: free
+    buildCommand: ./gradlew clean build
+    startCommand: java -jar build/libs/*.jar
