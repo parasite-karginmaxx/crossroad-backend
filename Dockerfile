@@ -1,7 +1,7 @@
 FROM eclipse-temurin:21-jdk as build
 WORKDIR /app
 COPY . .
-RUN ./gradlew clean bootJar
+RUN ./gradlew.bat clean bootJar
 
 FROM eclipse-temurin:21-jre
 WORKDIR /app
