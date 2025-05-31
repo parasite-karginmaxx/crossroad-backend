@@ -17,8 +17,8 @@ public class Addition {
 
     private String name;
     private double price;
-//
-//    @ManyToMany(mappedBy = "additions")
-//    private Set<Booking> bookings = new HashSet<>();
+
+    @ManyToMany(mappedBy = "additions")
+    private Set<Booking> bookings = new HashSet<>();
 }
 

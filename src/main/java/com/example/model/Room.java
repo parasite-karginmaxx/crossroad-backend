@@ -1,6 +1,7 @@
 package com.example.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,6 +27,7 @@ public class Room {
     private Type type;
 
     @OneToMany(mappedBy = "room")
+    @JsonManagedReference
     private List<Booking> bookings = new ArrayList<>();
 }
 

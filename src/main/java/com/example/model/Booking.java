@@ -25,6 +25,7 @@ public class Booking {
 
     @ManyToOne
     @JoinColumn(name = "room_id")
+    @JsonBackReference
     private Room room;
 
     @ManyToOne
