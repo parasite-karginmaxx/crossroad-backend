@@ -10,9 +10,12 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**") // ко всем маршрутам
-                .allowedOrigins("https://crossroad-frontend.onrender.com") // твой фронтенд
+                .allowedOrigins(
+                        "https://crossroad-frontend.onrender.com",
+                        "http://localhost:5173"
+                )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
-                .allowCredentials(true); // если отправляешь куки или Authorization
+                .allowCredentials(true);
     }
 }
