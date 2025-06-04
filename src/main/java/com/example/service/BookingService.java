@@ -9,6 +9,8 @@ import com.example.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class BookingService {
@@ -29,5 +31,37 @@ public class BookingService {
                 .build();
 
         return bookingRepository.save(booking);
+    }
+
+    public List<Booking> getAllBookings() {
+        return bookingRepository.findAll();
+    }
+
+    public Booking getBookingById(Long id) {
+        return bookingRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Бронирование с ID " + id + " не найдено"));
+    }
+
+    public Booking updateBooking(Long id, BookingRequest request) {
+        Booking booking = bookingRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Бронирование не найдено"));
+
+        booking.setCheckIn(request.getCheckIn());
+        booking.setCheckOut(request.getCheckOut());
+
+        if (!booking.getRoom().getId().equals(request.getRoomId())) {
+            Room room = roomRepository.findById(request.getRoomId())
+                    .orElseThrow(() -> new RuntimeException("Комната не найдена"));
+            booking.setRoom(room);
+        }
+
+        return bookingRepository.save(booking);
+    }
+
+    public void deleteBooking(Long id) {
+        if (!bookingRepository.existsById(id)) {
+            throw new RuntimeException("Бронирование не найдено");
+        }
+        bookingRepository.deleteById(id);
     }
 }
