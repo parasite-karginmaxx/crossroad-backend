@@ -1,5 +1,6 @@
 package com.example.config;
 
+import com.example.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -38,6 +39,10 @@ public class JwtConfig extends OncePerRequestFilter {
 
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
+
+        User user = (com.example.model.User) userDetails;
+        claims.put("role", user.getRole().getRole());
+
         return createToken(claims, userDetails.getUsername());
     }
 
