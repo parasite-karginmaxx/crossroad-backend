@@ -25,6 +25,13 @@ public class RoomController {
         return ResponseEntity.ok(roomRepository.findAll());
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getRoomById(@PathVariable Long id) {
+        return roomRepository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
     @PostMapping("/add")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> createRoom(@RequestBody RoomRequest request) {
