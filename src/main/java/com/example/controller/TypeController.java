@@ -37,7 +37,7 @@ public class TypeController {
         return ResponseEntity.ok(updated);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("delete/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteType(@PathVariable Long id) {
         typeService.deleteType(id);
