@@ -1,10 +1,10 @@
 package com.example.service;
 
-import com.example.config.JwtConfig;
 import com.example.dto.AuthRequest;
 import com.example.dto.AuthResponse;
 import com.example.model.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,7 +17,7 @@ public class AuthService {
 
     private final AuthenticationManager authenticationManager;
     private final CustomUserDetailsService userDetailsService;
-    private final JwtConfig jwtConfig;
+    private final JwtService jwtService;
     private final UserService userService;
 
     public ResponseEntity<?> loginWithRoleCheck(AuthRequest request, String requiredRole) {
@@ -35,9 +35,28 @@ public class AuthService {
         }
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(request.getUsername());
-        String jwt = jwtConfig.generateToken(userDetails);
+        String accessToken = jwtService.generateAccessToken(userDetails);
+        String refreshToken = jwtService.generateRefreshToken(userDetails);
 
-        return ResponseEntity.ok(new AuthResponse(jwt));
+        return ResponseEntity.ok(new AuthResponse(accessToken, refreshToken));
     }
+
+    public ResponseEntity<?> refresh(String refreshToken) {
+        if (!jwtService.validateToken(refreshToken)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Невалидный refresh токен");
+        }
+
+        String tokenType = jwtService.extractClaim(refreshToken, claims -> (String) claims.get("type"));
+        if (!"refresh".equals(tokenType)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Только refresh токен может использоваться для обновления.");
+        }
+
+        String username = jwtService.extractUsername(refreshToken);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        String newAccessToken = jwtService.generateAccessToken(userDetails);
+
+        return ResponseEntity.ok(new AuthResponse(newAccessToken, refreshToken));
+    }
+
 }
 
