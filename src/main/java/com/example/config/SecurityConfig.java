@@ -34,10 +34,13 @@ public class SecurityConfig {
                 // Настройка авторизации (новый синтаксис)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(
-                                "/api/auth/**",
                                 "/v3/api-docs/**",
-                                "swagger-ui/**",
-                                "/swagger-ui.html"
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/api/auth/login",
+                                "/api/auth/admin/login",
+                                "/api/rooms/all",
+                                "/api/types/all"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

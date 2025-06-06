@@ -26,7 +26,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request) {
-        return authService.loginWithRoleCheck(request, null); // без проверки роли
+        return authService.loginWithRoleCheck(request, "ROLE_USER"); // без проверки роли
     }
 
     @PostMapping("/admin/login")
