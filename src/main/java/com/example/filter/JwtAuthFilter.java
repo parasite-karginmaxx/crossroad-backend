@@ -42,11 +42,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         System.out.println("🔎 REQUEST URI: " + uri + " | METHOD: " + method);
 
-        if ("POST".equalsIgnoreCase(method) && "/api/auth/refresh".equals(uri)) {
-            System.out.println("✅ Skipping filter for refresh endpoint");
+        if ("POST".equalsIgnoreCase(method) &&
+                (uri.equals("/api/auth/refresh") || uri.equals("/api/auth/login") || uri.equals("/api/auth/admin/login"))) {
+            System.out.println("Skipping filter for auth endpoint: " + uri);
             filterChain.doFilter(request, response);
             return;
         }
+
 
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
