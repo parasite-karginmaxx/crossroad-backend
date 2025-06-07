@@ -19,7 +19,7 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final PasswordEncoder passwordEncoder;
 
     public User saveUser(RegisterRequest request, String roleName) {
         if (userRepository.existsByUsername(request.getUsername())) {
@@ -28,9 +28,7 @@ public class UserService {
         if (request.getPassword() == null || request.getPassword().isBlank()) {
             throw new IllegalArgumentException("Password cannot be empty");
         }
-        String encodedPassword = request.getPassword().startsWith("$2a$")
-                ? request.getPassword()
-                : passwordEncoder.encode(request.getPassword());
+        String encodedPassword = passwordEncoder.encode(request.getPassword());
 
         Role role = roleRepository.findByRole(roleName)
                 .orElseGet(() -> roleRepository.save(
