@@ -3,6 +3,7 @@ package com.example.controller.admin;
 import com.example.dto.response.BookingResponse;
 import com.example.enums.BookingStatus;
 import com.example.service.BookingService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "Бронирования (Админ)", description = "Управление всеми бронированиями")
 @RestController
 @RequestMapping("/api/admin/bookings")
 @RequiredArgsConstructor
