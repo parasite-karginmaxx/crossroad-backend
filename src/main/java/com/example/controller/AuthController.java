@@ -4,17 +4,16 @@ import com.example.dto.request.AuthRequest;
 import com.example.dto.request.RegisterRequest;
 import com.example.service.AuthService;
 import com.example.service.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "Аутентификация", description = "Эндпоинты для авторизации, регистрации и т.д.")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")
@@ -22,7 +21,6 @@ public class AuthController {
 
     private final AuthService authService;
     private final UserService userService;
-
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request) {
