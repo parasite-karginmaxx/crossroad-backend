@@ -1,6 +1,6 @@
 package com.example.controller;
 
-import com.example.dto.UserProfileRequest;
+import com.example.dto.request.UserProfileRequest;
 import com.example.service.UserProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

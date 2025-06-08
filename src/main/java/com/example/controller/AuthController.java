@@ -1,7 +1,7 @@
 package com.example.controller;
 
-import com.example.dto.AuthRequest;
-import com.example.dto.RegisterRequest;
+import com.example.dto.request.AuthRequest;
+import com.example.dto.request.RegisterRequest;
 import com.example.service.AuthService;
 import com.example.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;

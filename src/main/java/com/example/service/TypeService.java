@@ -1,6 +1,6 @@
 package com.example.service;
 
-import com.example.dto.TypeRequest;
+import com.example.dto.request.TypeRequest;
 import com.example.model.Type;
 import com.example.repository.TypeRepository;
 import org.springframework.stereotype.Service;

@@ -1,13 +1,12 @@
 package com.example.service;
 
-import com.example.dto.RegisterRequest;
+import com.example.dto.request.RegisterRequest;
 import com.example.model.Role;
 import com.example.model.User;
 import com.example.model.UserProfile;
 import com.example.repository.RoleRepository;
 import com.example.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
