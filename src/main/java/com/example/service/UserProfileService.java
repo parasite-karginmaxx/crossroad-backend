@@ -1,6 +1,6 @@
 package com.example.service;
 
-import com.example.dto.UserProfileRequest;
+import com.example.dto.request.UserProfileRequest;
 import com.example.model.User;
 import com.example.model.UserProfile;
 import com.example.repository.UserProfileRepository;

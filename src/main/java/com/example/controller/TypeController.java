@@ -1,6 +1,6 @@
 package com.example.controller;
 
-import com.example.dto.TypeRequest;
+import com.example.dto.request.TypeRequest;
 import com.example.model.Type;
 import com.example.service.TypeService;
 import lombok.RequiredArgsConstructor;

@@ -1,6 +1,6 @@
 package com.example.controller;
 
-import com.example.dto.RoomRequest;
+import com.example.dto.request.RoomRequest;
 import com.example.model.Room;
 import com.example.model.Type;
 import com.example.repository.RoomRepository;

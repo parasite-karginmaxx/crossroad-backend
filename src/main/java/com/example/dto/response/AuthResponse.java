@@ -1,5 +1,5 @@
 // AuthResponse.java
-package com.example.dto;
+package com.example.dto.response;
 
 import lombok.Data;
 

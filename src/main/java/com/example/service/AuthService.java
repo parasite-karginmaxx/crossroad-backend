@@ -1,7 +1,7 @@
 package com.example.service;
 
-import com.example.dto.AuthRequest;
-import com.example.dto.AuthResponse;
+import com.example.dto.request.AuthRequest;
+import com.example.dto.response.AuthResponse;
 import com.example.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

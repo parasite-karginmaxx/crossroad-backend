@@ -1,5 +1,6 @@
 package com.example.model;
 
+import com.example.enums.BookingStatus;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -21,7 +22,11 @@ public class Booking {
 
     private LocalDate checkIn;
     private LocalDate checkOut;
-    private boolean status;
+    private LocalDate originalCheckOut;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private BookingStatus status;
 
     @ManyToOne
     @JoinColumn(name = "room_id")
@@ -29,7 +34,7 @@ public class Booking {
     private Room room;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     @ToString.Exclude
     @JsonBackReference
     private User user;
