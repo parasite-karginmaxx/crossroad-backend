@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,6 +39,7 @@ public class UserService {
                 .email(request.getEmail())
                 .password(encodedPassword)
                 .role(role)
+                .registrationDate(LocalDate.now())
                 .build();
 
         UserProfile profile = new UserProfile();

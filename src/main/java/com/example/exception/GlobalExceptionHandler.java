@@ -22,4 +22,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleRuntime(RuntimeException e) {
         return ResponseEntity.status(404).body("Ошибка: " + e.getMessage());
     }
+
+    @ExceptionHandler(com.example.exception.IncompleteProfileException.class)
+    public ResponseEntity<String> handleIncompleteProfile(com.example.exception.IncompleteProfileException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
 }
