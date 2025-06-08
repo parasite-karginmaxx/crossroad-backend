@@ -3,6 +3,7 @@ package com.example.service;
 import com.example.dto.request.BookingRequest;
 import com.example.dto.response.BookingResponse;
 import com.example.enums.BookingStatus;
+import com.example.exception.IncompleteProfileException;
 import com.example.model.Booking;
 import com.example.model.Room;
 import com.example.model.User;
@@ -24,6 +25,7 @@ public class BookingService {
     private final BookingRepository bookingRepository;
 
     public Booking createBooking(BookingRequest request, User user) {
+        validateUserProfile(user);
         validateDates(request.getCheckIn(), request.getCheckOut());
 
         Room room = roomRepository.findById(request.getRoomId())
@@ -42,14 +44,14 @@ public class BookingService {
     }
 
     public List<BookingResponse> getUserBookings(User user) {
-        return bookingRepository.findAllByUser(user).stream()
-                .map(b -> mapToResponse(b, user.getUsername()))
+        return bookingRepository.findByUser(user).stream()
+                .map(b -> mapToResponse(b, false))
                 .toList();
     }
 
     public List<BookingResponse> getAllBookingResponses() {
         return bookingRepository.findAll().stream()
-                .map(b -> mapToResponse(b, b.getUser().getUsername()))
+                .map(b -> mapToResponse(b, true))
                 .toList();
     }
 
@@ -139,15 +141,33 @@ public class BookingService {
 
     // Вспомогательные методы
 
-    private BookingResponse mapToResponse(Booking booking, String username) {
-        return new BookingResponse(
-                booking.getId(),
-                username,
-                booking.getRoom().getNumber(),
-                booking.getCheckIn(),
-                booking.getCheckOut(),
-                booking.getStatus()
-        );
+    public BookingResponse mapToResponse(Booking booking, boolean isAdminView) {
+        var user = booking.getUser();
+        var profile = user.getProfile();
+
+        String fullName = profile != null
+                ? String.join(" ",
+                safe(profile.getLastName()),
+                safe(profile.getFirstName()),
+                safe(profile.getMiddleName())).trim()
+                : "";
+
+        return BookingResponse.builder()
+                .id(booking.getId())
+                .username(user.getUsername())
+                .fullName(isAdminView ? fullName : null)
+                .phone(isAdminView ? profile.getPhone() : null)
+                .passport(isAdminView ? profile.getPassportNumber() : null)
+                .citizenship(isAdminView ? profile.getCitizenship() : null)
+                .roomNumber(booking.getRoom().getNumber())
+                .checkIn(booking.getCheckIn())
+                .checkOut(booking.getCheckOut())
+                .status(booking.getStatus())
+                .build();
+    }
+
+    private String safe(String s) {
+        return s == null ? "" : s;
     }
 
     private void validateDates(LocalDate checkIn, LocalDate checkOut) {
@@ -157,6 +177,27 @@ public class BookingService {
         if (checkOut.isBefore(checkIn)) {
             throw new IllegalArgumentException("Дата выезда должна быть позже даты заезда");
         }
+    }
+
+    private void validateUserProfile(User user) {
+        var profile = user.getProfile();
+        if (profile == null) {
+            throw new IncompleteProfileException("Профиль отсутствует");
+        }
+
+        if (isBlank(profile.getFirstName())) {
+            throw new IncompleteProfileException("Имя обязательно");
+        } else if (isBlank(profile.getLastName())) {
+            throw new IncompleteProfileException("Фамилия обязательна");
+        } else if (isBlank(profile.getPassportNumber())) {
+            throw new IncompleteProfileException("Паспортные данные обязательны");
+        } else if (isBlank(profile.getPhone())) {
+            throw new IncompleteProfileException("Номер телефона обязателен");
+        }
+    }
+
+    private boolean isBlank(String s) {
+        return s == null || s.trim().isEmpty();
     }
 
     private void checkOwner(Booking booking, User user) {

@@ -22,6 +22,9 @@ public class UserProfile {
     private String phone;
     private String gender;
     private LocalDate birthDate;
+    private String passportNumber;
+    private String address;
+    private String citizenship;
 
     @JsonBackReference
     @OneToOne
