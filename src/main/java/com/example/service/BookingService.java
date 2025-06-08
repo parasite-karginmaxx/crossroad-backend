@@ -31,6 +31,14 @@ public class BookingService {
         Room room = roomRepository.findById(request.getRoomId())
                 .orElseThrow(() -> new RuntimeException("Комната не найдена"));
 
+        List<Booking> conflicts = bookingRepository.findConflictingBookings(
+                request.getRoomId(), request.getCheckIn(), request.getCheckOut()
+        );
+
+        if (!conflicts.isEmpty()) {
+            throw new IllegalStateException("Комната уже забронирована на выбранные даты");
+        }
+
         Booking booking = Booking.builder()
                 .checkIn(request.getCheckIn())
                 .checkOut(request.getCheckOut())

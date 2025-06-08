@@ -44,4 +44,10 @@ public class AdminBookingController {
         bookingService.rejectBookingExtension(id);
         return ResponseEntity.ok("Продление отклонено");
     }
+
+    @DeleteMapping("/{id}/delete")
+    public ResponseEntity<String> deleteBooking(@PathVariable Long id) {
+        bookingService.deleteBooking(id);
+        return ResponseEntity.ok("Бронирование #" + id + " удалено");
+    }
 }

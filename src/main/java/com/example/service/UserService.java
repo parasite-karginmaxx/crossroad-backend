@@ -17,27 +17,21 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class UserService {
+
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
     public User saveUser(RegisterRequest request, String roleName) {
-        if (userRepository.existsByUsername(request.getUsername())) {
-            throw new IllegalArgumentException("Пользователь с таким именем уже существует");
-        }
-        if (request.getPassword() == null || request.getPassword().isBlank()) {
-            throw new IllegalArgumentException("Password cannot be empty");
-        }
-        String encodedPassword = passwordEncoder.encode(request.getPassword());
+        validateRegistrationData(request);
 
         Role role = roleRepository.findByRole(roleName)
-                .orElseGet(() -> roleRepository.save(
-                        Role.builder().role(roleName).build()
-                ));
+                .orElseGet(() -> roleRepository.save(new Role(null, roleName)));
+
         User user = User.builder()
                 .username(request.getUsername())
                 .email(request.getEmail())
-                .password(encodedPassword)
+                .password(passwordEncoder.encode(request.getPassword()))
                 .role(role)
                 .registrationDate(LocalDate.now())
                 .build();
@@ -47,6 +41,28 @@ public class UserService {
         user.setProfile(profile);
 
         return userRepository.save(user);
+    }
+
+    private void validateRegistrationData(RegisterRequest request) {
+        if (userRepository.existsByUsername(request.getUsername())) {
+            throw new IllegalArgumentException("Пользователь с таким именем уже существует");
+        }
+
+        if (isBlank(request.getPassword())) {
+            throw new IllegalArgumentException("Пароль обязателен");
+        }
+
+        if (isBlank(request.getEmail())) {
+            throw new IllegalArgumentException("Email обязателен");
+        }
+
+        if (!request.getEmail().matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
+            throw new IllegalArgumentException("Некорректный формат электронной почты");
+        }
+    }
+
+    private boolean isBlank(String s) {
+        return s == null || s.isBlank();
     }
 
     public Optional<User> getUserById(Long id) {
