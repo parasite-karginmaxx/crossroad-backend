@@ -147,6 +147,22 @@ public class BookingService {
         bookingRepository.deleteById(id);
     }
 
+    @Transactional
+    public void activateOngoingBookings() {
+        LocalDate today = LocalDate.now();
+        List<Booking> bookings = bookingRepository.findByStatus(BookingStatus.CONFIRMED);
+
+        for (Booking booking : bookings) {
+            if ((booking.getCheckIn().isBefore(today) || booking.getCheckIn().isEqual(today)) &&
+                    (booking.getCheckOut().isAfter(today) || booking.getCheckOut().isEqual(today))) {
+
+                booking.setStatus(BookingStatus.ACTIVE);
+            }
+        }
+
+        bookingRepository.saveAll(bookings);
+    }
+
     // Вспомогательные методы
 
     public BookingResponse mapToResponse(Booking booking, boolean isAdminView) {
