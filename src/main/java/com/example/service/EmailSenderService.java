@@ -19,7 +19,7 @@ public class EmailSenderService {
             message.setTo(to);
             message.setSubject(subject);
             message.setText(text);
-            message.setFrom("parasite-off@yandex.ru");
+            message.setFrom("crossroadhotel@yandex.ru");
 
             mailSender.send(message);
             System.out.println(">>> Письмо отправлено успешно");
