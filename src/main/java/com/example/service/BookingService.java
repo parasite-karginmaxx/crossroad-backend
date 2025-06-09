@@ -148,23 +148,32 @@ public class BookingService {
     }
 
     @Transactional
-    public void activateOngoingBookings() {
+    public void updateBookingStatus() {
         LocalDate today = LocalDate.now();
-        List<Booking> bookings = bookingRepository.findByStatus(BookingStatus.CONFIRMED);
 
-        for (Booking booking : bookings) {
-            if ((booking.getCheckIn().isBefore(today) || booking.getCheckIn().isEqual(today)) &&
-                    (booking.getCheckOut().isAfter(today) || booking.getCheckOut().isEqual(today))) {
-
+        // CONFIRMED → ACTIVE
+        List<Booking> confirmed = bookingRepository.findByStatus(BookingStatus.CONFIRMED);
+        for (Booking booking : confirmed) {
+            if (!today.isBefore(booking.getCheckIn()) && !today.isAfter(booking.getCheckOut())) {
                 booking.setStatus(BookingStatus.ACTIVE);
             }
         }
 
-        bookingRepository.saveAll(bookings);
+        // ACTIVE → COMPLETED
+        List<Booking> active = bookingRepository.findByStatus(BookingStatus.ACTIVE);
+        for (Booking booking : active) {
+            if (!booking.getCheckOut().isAfter(today)) {
+                booking.setStatus(BookingStatus.COMPLETED);
+            }
+        }
+
+        bookingRepository.saveAll(confirmed);
+        bookingRepository.saveAll(active);
     }
 
-    // Вспомогательные методы
-
+    /**
+     *  Вспомогательные методы
+     */
     public BookingResponse mapToResponse(Booking booking, boolean isAdminView) {
         var user = booking.getUser();
         var profile = user.getProfile();

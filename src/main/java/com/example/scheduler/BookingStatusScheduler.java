@@ -12,7 +12,7 @@ public class BookingStatusScheduler {
     private final BookingService bookingService;
 
     @Scheduled(cron = "0 0 6 * * *") // каждый день в 6:00
-    public void activateConfirmedBookings() {
-        bookingService.activateOngoingBookings();
+    public void updateStatuses() {
+        bookingService.updateBookingStatus();
     }
 }
