@@ -1,7 +1,8 @@
-package com.example.controller;
+package com.example.controller.user;
 
 import com.example.dto.request.UserProfileRequest;
 import com.example.service.UserProfileService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ public class UserProfileController {
 
     private final UserProfileService userProfileService;
 
+    @Operation(summary = "Обновить данные профился")
     @PatchMapping("/update")
     public ResponseEntity<String> updateProfile(@Valid @RequestBody UserProfileRequest request) {
         userProfileService.updateCurrentUserProfile(request);

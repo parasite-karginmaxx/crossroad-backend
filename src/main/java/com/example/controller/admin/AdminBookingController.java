@@ -5,6 +5,7 @@ import com.example.enums.BookingStatus;
 import com.example.model.Booking;
 import com.example.service.BookingService;
 import com.example.service.BookingStatusService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,11 +24,13 @@ public class AdminBookingController {
     private final BookingService bookingService;
     private final BookingStatusService statusService;
 
+    @Operation(summary = "Получение всех бронирований")
     @GetMapping("/all")
     public ResponseEntity<List<BookingResponse>> getAllBookings() {
         return ResponseEntity.ok(bookingService.getAllBookingResponses());
     }
 
+    @Operation(summary = "Изменение статуса бронирования")
     @PutMapping("/{id}/status")
     public ResponseEntity<String> updateBookingStatus(
             @PathVariable Long id,
@@ -39,6 +42,7 @@ public class AdminBookingController {
         return ResponseEntity.ok("Бронирование #" + id + " обновлено до: " + status);
     }
 
+    @Operation(summary = "Удаление бронирования")
     @DeleteMapping("/{id}/delete")
     public ResponseEntity<String> deleteBooking(@PathVariable Long id) {
         bookingService.deleteBooking(id);

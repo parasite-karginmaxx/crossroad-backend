@@ -23,6 +23,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(404).body("Ошибка: " + e.getMessage());
     }
 
+    @ExceptionHandler(org.springframework.security.authentication.DisabledException.class)
+    public ResponseEntity<String> handleDisabled(org.springframework.security.authentication.DisabledException e) {
+        return ResponseEntity.status(403).body("Пользователь заблокирован");
+    }
+
     @ExceptionHandler(com.example.exception.IncompleteProfileException.class)
     public ResponseEntity<String> handleIncompleteProfile(com.example.exception.IncompleteProfileException e) {
         return ResponseEntity.badRequest().body(e.getMessage());

@@ -1,39 +1,29 @@
-package com.example.controller;
+package com.example.controller.admin;
 
 import com.example.dto.request.RoomRequest;
 import com.example.model.Room;
 import com.example.model.Type;
 import com.example.repository.RoomRepository;
 import com.example.repository.TypeRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/rooms")
 @RequiredArgsConstructor
-public class RoomController {
+@Tag(name = "Комнаты (Админ)", description = "Эндпоинты работы с комнатами")
+@PreAuthorize("hasRole('ADMIN')")
+public class AdminRoomController {
 
     private final RoomRepository roomRepository;
     private final TypeRepository typeRepository;
 
-    @GetMapping("/all")
-    public ResponseEntity<List<Room>> getAllRooms() {
-        return ResponseEntity.ok(roomRepository.findAll());
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getRoomById(@PathVariable Long id) {
-        return roomRepository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
+    @Operation(summary = "Добавление комнаты")
     @PostMapping("/add")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> createRoom(@RequestBody RoomRequest request) {
         if (roomRepository.existsByNumber(request.getNumber())) {
             return ResponseEntity.badRequest().body("Комната с таким номером уже существует");
@@ -55,8 +45,8 @@ public class RoomController {
         return ResponseEntity.ok("Комната успешно добавлена");
     }
 
+    @Operation(summary = "Удаление комнаты")
     @DeleteMapping("/delete/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> deleteRoom(@PathVariable Long id) {
         if (!roomRepository.existsById(id)) {
             return ResponseEntity.notFound().build();

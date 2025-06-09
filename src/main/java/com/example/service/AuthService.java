@@ -3,8 +3,7 @@ package com.example.service;
 import com.example.dto.request.AuthRequest;
 import com.example.dto.response.AuthResponse;
 import com.example.model.User;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,25 +14,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class AuthService {
 
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final UserService userService;
     private final UserDetailsService userDetailsService;
-
-    @Autowired
-    public AuthService(
-            AuthenticationManager authenticationManager,
-            JwtService jwtService,
-            UserService userService,
-            @Qualifier("customUserDetailsService") UserDetailsService userDetailsService
-    ) {
-        this.authenticationManager = authenticationManager;
-        this.jwtService = jwtService;
-        this.userService = userService;
-        this.userDetailsService = userDetailsService;
-    }
 
     public ResponseEntity<?> loginWithRoleCheck(AuthRequest request, String requiredRole) {
         try {
@@ -83,4 +70,3 @@ public class AuthService {
     }
 
 }
-
