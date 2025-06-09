@@ -14,7 +14,7 @@ import java.util.List;
 @Tag(name = "Пользователи (Админ)", description = "Эндпоинты пользователей для администраторов")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/users")
+@RequestMapping("/api/admin/users")
 @PreAuthorize("hasRole('ADMIN')")
 public class AdminUserController {
 

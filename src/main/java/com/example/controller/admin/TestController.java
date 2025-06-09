@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Тестирование", description = "POST /api/test/send-email?to=example@mail.ru&message=Привет")
 @RestController
-@RequestMapping("/api/test")
+@RequestMapping("/api/admin/test")
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('ADMIN')")
 public class TestController {

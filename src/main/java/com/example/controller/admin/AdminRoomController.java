@@ -10,7 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/rooms")
+@RequestMapping("/api/admin/rooms")
 @RequiredArgsConstructor
 @Tag(name = "Комнаты (Админ)", description = "Эндпоинты работы с комнатами")
 @PreAuthorize("hasRole('ADMIN')")
