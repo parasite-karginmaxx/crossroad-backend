@@ -1,6 +1,7 @@
 package com.example.controller.user;
 
 import com.example.dto.request.UserProfileRequest;
+import com.example.model.UserProfile;
 import com.example.service.UserProfileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,8 +22,7 @@ public class UserProfileController {
 
     @Operation(summary = "Обновить данные профился")
     @PatchMapping("/update")
-    public ResponseEntity<String> updateProfile(@Valid @RequestBody UserProfileRequest request) {
-        userProfileService.updateCurrentUserProfile(request);
-        return ResponseEntity.ok("Профиль обновлён");
+    public ResponseEntity<UserProfile> updateProfile(@Valid @RequestBody UserProfileRequest request) {
+        return ResponseEntity.ok(userProfileService.updateCurrentUserProfile(request));
     }
 }

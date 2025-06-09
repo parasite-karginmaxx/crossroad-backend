@@ -1,8 +1,10 @@
 package com.example.service;
 
 import com.example.dto.request.AuthRequest;
+import com.example.dto.request.RegisterRequest;
 import com.example.dto.response.AuthResponse;
 import com.example.model.User;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -69,4 +71,22 @@ public class AuthService {
         return ResponseEntity.ok(new AuthResponse(newAccessToken, refreshToken));
     }
 
+    public ResponseEntity<?> loginAsUser(AuthRequest request) {
+        return loginWithRoleCheck(request, "ROLE_USER");
+    }
+
+    public ResponseEntity<?> registerUser(RegisterRequest request) {
+        return ResponseEntity.ok(userService.saveUser(request, "ROLE_USER"));
+    }
+
+    public ResponseEntity<?> refreshFromRequest(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Токен отсутствует");
+        }
+
+        String refreshToken = authHeader.substring(7);
+        return refresh(refreshToken);
+    }
 }

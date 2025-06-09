@@ -9,11 +9,14 @@ import com.example.repository.RoleRepository;
 import com.example.repository.UserRepository;
 import com.example.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -52,6 +55,14 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new NoSuchElementException("Пользователь не найден"));
+    }
+
     public void blockUserById(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Пользователь не найден"));
@@ -62,8 +73,9 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public Optional<User> getUserById(Long id) {
-        return userRepository.findById(id);
+    public User getUserByIdOrThrow(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Пользователь не найден"));
     }
 
     public Optional<User> getUserByUsername(String username) {
@@ -75,9 +87,8 @@ public class UserService {
     }
 
     public void deleteUserById(Long id) {
-        if (!userRepository.existsById(id)) {
-            throw new IllegalArgumentException("Пользователь с ID " + id + " не найден");
-        }
-        userRepository.deleteById(id);
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Пользователь не найден"));
+        userRepository.delete(user);
     }
 }

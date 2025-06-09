@@ -1,7 +1,7 @@
 package com.example.controller.user;
 
 import com.example.model.Room;
-import com.example.repository.RoomRepository;
+import com.example.service.RoomService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -16,19 +16,17 @@ import java.util.List;
 @Tag(name = "Комнаты (Пользователи)", description = "Эндпоинты получения комнат")
 public class UserRoomController {
 
-    private final RoomRepository roomRepository;
+    private final RoomService roomService;
 
     @Operation(summary = "Получение всех комнат")
     @GetMapping("/all")
     public ResponseEntity<List<Room>> getAllRooms() {
-        return ResponseEntity.ok(roomRepository.findAll());
+        return ResponseEntity.ok(roomService.getAllRooms());
     }
 
-    @Operation(summary = "Получение комнаты по id")
+    @Operation(summary = "Получение комнаты по ID")
     @GetMapping("/{id}")
-    public ResponseEntity<?> getRoomById(@PathVariable Long id) {
-        return roomRepository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<Room> getRoomById(@PathVariable Long id) {
+        return ResponseEntity.ok(roomService.getRoomByIdOrThrow(id));
     }
 }

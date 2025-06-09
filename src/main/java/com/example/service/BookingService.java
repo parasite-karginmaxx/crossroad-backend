@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -51,7 +52,7 @@ public class BookingService {
 
     public Booking getBookingById(Long id) {
         return bookingRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Бронирование с ID " + id + " не найдено"));
+                .orElseThrow(() -> new NoSuchElementException("Бронирование с ID " + id + " не найдено"));
     }
 
     @Transactional
