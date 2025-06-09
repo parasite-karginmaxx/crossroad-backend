@@ -1,6 +1,5 @@
 package com.example.config;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.*;
 
@@ -14,7 +13,7 @@ public class CorsConfig implements WebMvcConfigurer {
                         "https://crossroad-frontend.onrender.com",
                         "http://localhost:5173"
                 )
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedMethods("GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);
     }
