@@ -7,12 +7,16 @@ import com.example.model.User;
 import com.example.model.UserProfile;
 import com.example.repository.RoleRepository;
 import com.example.repository.UserRepository;
+import com.example.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -23,9 +27,10 @@ public class UserService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailVerificationService emailVerificationService;
+    private final UserValidator userValidator;
 
     public User saveUser(RegisterRequest request, String roleName) {
-        validateRegistrationData(request);
+        userValidator.validateRegistration(request);
 
         Role role = roleRepository.findByRole(roleName)
                 .orElseGet(() -> roleRepository.save(new Role(null, roleName)));
@@ -50,12 +55,27 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    private boolean isBlank(String s) {
-        return s == null || s.isBlank();
+    public User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new NoSuchElementException("Пользователь не найден"));
     }
 
-    public Optional<User> getUserById(Long id) {
-        return userRepository.findById(id);
+    public void blockUserById(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Пользователь не найден"));
+
+        userValidator.validateUserCanBeBlocked(user);
+
+        user.setStatus(UserStatus.BLOCKED);
+        userRepository.save(user);
+    }
+
+    public User getUserByIdOrThrow(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Пользователь не найден"));
     }
 
     public Optional<User> getUserByUsername(String username) {
@@ -67,27 +87,8 @@ public class UserService {
     }
 
     public void deleteUserById(Long id) {
-        if (!userRepository.existsById(id)) {
-            throw new IllegalArgumentException("Пользователь с ID " + id + " не найден");
-        }
-        userRepository.deleteById(id);
-    }
-
-    private void validateRegistrationData(RegisterRequest request) {
-        if (userRepository.existsByUsername(request.getUsername())) {
-            throw new IllegalArgumentException("Пользователь с таким именем уже существует");
-        }
-
-        if (isBlank(request.getPassword())) {
-            throw new IllegalArgumentException("Пароль обязателен");
-        }
-
-        if (isBlank(request.getEmail())) {
-            throw new IllegalArgumentException("Email обязателен");
-        }
-
-        if (!request.getEmail().matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
-            throw new IllegalArgumentException("Некорректный формат электронной почты");
-        }
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Пользователь не найден"));
+        userRepository.delete(user);
     }
 }

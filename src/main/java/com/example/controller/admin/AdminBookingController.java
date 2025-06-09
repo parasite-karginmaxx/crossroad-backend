@@ -2,7 +2,10 @@ package com.example.controller.admin;
 
 import com.example.dto.response.BookingResponse;
 import com.example.enums.BookingStatus;
+import com.example.model.Booking;
 import com.example.service.BookingService;
+import com.example.service.BookingStatusService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,32 +22,27 @@ import java.util.List;
 public class AdminBookingController {
 
     private final BookingService bookingService;
+    private final BookingStatusService statusService;
 
+    @Operation(summary = "Получение всех бронирований")
     @GetMapping("/all")
     public ResponseEntity<List<BookingResponse>> getAllBookings() {
         return ResponseEntity.ok(bookingService.getAllBookingResponses());
     }
 
+    @Operation(summary = "Изменение статуса бронирования")
     @PutMapping("/{id}/status")
     public ResponseEntity<String> updateBookingStatus(
             @PathVariable Long id,
             @RequestParam BookingStatus status) {
-        bookingService.updateBookingStatusByAdmin(id, status);
+
+        Booking booking = bookingService.getBookingById(id);
+        statusService.updateStatusManually(booking, status);
+
         return ResponseEntity.ok("Бронирование #" + id + " обновлено до: " + status);
     }
 
-    @PutMapping("/{id}/approve-extension")
-    public ResponseEntity<String> approveExtension(@PathVariable Long id) {
-        bookingService.approveBookingExtension(id);
-        return ResponseEntity.ok("Продление подтверждено");
-    }
-
-    @PutMapping("/{id}/reject-extension")
-    public ResponseEntity<String> rejectExtension(@PathVariable Long id) {
-        bookingService.rejectBookingExtension(id);
-        return ResponseEntity.ok("Продление отклонено");
-    }
-
+    @Operation(summary = "Удаление бронирования")
     @DeleteMapping("/{id}/delete")
     public ResponseEntity<String> deleteBooking(@PathVariable Long id) {
         bookingService.deleteBooking(id);

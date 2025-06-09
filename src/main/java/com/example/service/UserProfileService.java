@@ -16,7 +16,7 @@ public class UserProfileService {
     private final UserProfileRepository userProfileRepository;
     private final UserRepository userRepository;
 
-    public void updateCurrentUserProfile(UserProfileRequest request) {
+    public UserProfile updateCurrentUserProfile(UserProfileRequest request) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
@@ -27,7 +27,7 @@ public class UserProfileService {
 
         updateProfile(profile, request);
 
-        userProfileRepository.save(profile);
+        return userProfileRepository.save(profile);
     }
 
     private void validateProfileFields(UserProfileRequest request) {
