@@ -1,6 +1,6 @@
 package com.example.controller.admin;
 
-import com.example.service.BookingService;
+import com.example.service.BookingStatusService;
 import com.example.service.EmailSenderService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class TestController {
 
     private final EmailSenderService emailSenderService;
-    private final BookingService bookingService;
+    private final BookingStatusService bookingService;
 
     @Operation (
             summary = "Отправка тестового письма",
@@ -43,7 +43,7 @@ public class TestController {
     )
     @GetMapping("/booking/update_status")
     public ResponseEntity<String> updateBookingStatus() {
-        bookingService.updateBookingStatus();
+        bookingService.updateStatusAuto();
         return ResponseEntity.ok("Обновление статусов бронирований выполнено");
     }
 }
