@@ -9,11 +9,12 @@ import java.util.List;
 import java.util.*;
 
 @Entity
+@Table(name = "room_type")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Type {
+public class RoomType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,7 +22,7 @@ public class Type {
     private String name;
     private String description;
 
-    @OneToMany(mappedBy = "type")
+    @OneToMany(mappedBy = "roomType")
     @JsonManagedReference
     private List<Room> rooms = new ArrayList<>();
 

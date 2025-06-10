@@ -65,9 +65,13 @@ public class SecurityConfig {
                                 "/api/auth/login",
                                 "/api/auth/register",
                                 "/api/auth/admin/login",
+
                                 "/api/rooms/all",
                                 "/api/rooms/{id}",
-                                "/api/types/all"
+
+                                "/api/types/all",
+
+                                "/api/additions/all"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

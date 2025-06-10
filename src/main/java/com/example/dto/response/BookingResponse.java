@@ -1,11 +1,13 @@
 package com.example.dto.response;
 
+import com.example.dto.AdditionResponse;
 import com.example.enums.BookingStatus;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.Builder;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
@@ -21,10 +23,12 @@ public class BookingResponse {
     private LocalDate checkIn;
     private LocalDate checkOut;
     private BookingStatus status;
+    private List<AdditionResponse> additions;
 
     public BookingResponse(Long id, String username,
                            String fullName, String phone, String passport, String citizenship,
-                           String roomNumber, LocalDate checkIn, LocalDate checkOut, BookingStatus status){
+                           String roomNumber, LocalDate checkIn, LocalDate checkOut, BookingStatus status,
+                           List<AdditionResponse> additions){
         this.id = id;
         this.username = username;
         this.fullName = fullName;
@@ -35,5 +39,6 @@ public class BookingResponse {
         this.checkIn = checkIn;
         this.checkOut = checkOut;
         this.status = status;
+        this.additions = additions;
     }
 }

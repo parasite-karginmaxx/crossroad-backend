@@ -5,9 +5,11 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 @Entity
+@Table(name = "room")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,13 +20,18 @@ public class Room {
     private Long id;
 
     private String number;
-    private int pricePerNight;
     private String description;
+    private int capacity;
+    private boolean available;
+    private int floor;
+
+    @Column(precision = 10, scale = 2)
+    private BigDecimal pricePerNight;
 
     @ManyToOne
     @JoinColumn(name = "type_id")
     @JsonBackReference
-    private Type type;
+    private RoomType roomType;
 
     @OneToMany(mappedBy = "room")
     @JsonManagedReference

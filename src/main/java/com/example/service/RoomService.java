@@ -2,9 +2,9 @@ package com.example.service;
 
 import com.example.dto.request.RoomRequest;
 import com.example.model.Room;
-import com.example.model.Type;
+import com.example.model.RoomType;
 import com.example.repository.RoomRepository;
-import com.example.repository.TypeRepository;
+import com.example.repository.RoomTypeRepository;
 import com.example.validator.RoomValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,7 @@ import java.util.NoSuchElementException;
 public class RoomService {
 
     private final RoomRepository roomRepository;
-    private final TypeRepository typeRepository;
+    private final RoomTypeRepository roomTypeRepository;
     private final RoomValidator roomValidator;
 
     public Room createRoom(RoomRequest request) {
@@ -29,10 +29,10 @@ public class RoomService {
             throw new IllegalArgumentException("Комната с таким номером уже существует");
         }
 
-        Type type = getTypeById(request.getTypeId());
-        if (type == null) throw new NoSuchElementException("Тип комнаты не найден");
+        RoomType roomType = getTypeById(request.getTypeId());
+        if (roomType == null) throw new NoSuchElementException("Тип комнаты не найден");
 
-        Room room = buildRoom(request, type);
+        Room room = buildRoom(request, roomType);
         return roomRepository.save(room);
     }
 
@@ -40,12 +40,15 @@ public class RoomService {
         Room room = roomRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Комната не найдена"));
 
-        Type type = getTypeById(request.getTypeId());
-        if (type == null) throw new NoSuchElementException("Тип комнаты не найден");
+        RoomType roomType = getTypeById(request.getTypeId());
+        if (roomType == null) throw new NoSuchElementException("Тип комнаты не найден");
 
-        room.setPricePerNight(request.getPricePerNight());
         room.setDescription(request.getDescription());
-        room.setType(type);
+        room.setCapacity(request.getCapacity());
+        room.setAvailable(request.isAvailable());
+        room.setFloor(request.getFloor());
+        room.setPricePerNight(request.getPricePerNight());
+        room.setRoomType(roomType);
 
         return roomRepository.save(room);
     }
@@ -71,16 +74,19 @@ public class RoomService {
      *  Вспомогательные методы
      */
 
-    private Type getTypeById(Long id) {
-        return typeRepository.findById(id).orElse(null);
+    private RoomType getTypeById(Long id) {
+        return roomTypeRepository.findById(id).orElse(null);
     }
 
-    private Room buildRoom(RoomRequest request, Type type) {
+    private Room buildRoom(RoomRequest request, RoomType roomType) {
         return Room.builder()
                 .number(request.getNumber())
-                .pricePerNight(request.getPricePerNight())
                 .description(request.getDescription())
-                .type(type)
+                .capacity(request.getCapacity())
+                .available(request.isAvailable())
+                .floor(request.getFloor())
+                .pricePerNight(request.getPricePerNight())
+                .roomType(roomType)
                 .build();
     }
 }

@@ -4,9 +4,8 @@ import com.example.dto.request.BookingRequest;
 import com.example.dto.response.BookingResponse;
 import com.example.enums.BookingStatus;
 import com.example.mapper.BookingMapper;
-import com.example.model.Booking;
-import com.example.model.Room;
-import com.example.model.User;
+import com.example.model.*;
+import com.example.repository.AdditionRepository;
 import com.example.repository.BookingRepository;
 import com.example.validator.BookingValidator;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +23,7 @@ public class BookingService {
     private final BookingValidator bookingValidator;
     private final BookingRepository bookingRepository;
     private final BookingStatusService statusService;
+    private final AdditionRepository additionRepository;
 
     public Booking createBooking(BookingRequest request, User user) {
         bookingValidator.validateUserProfile(user);
@@ -104,7 +104,7 @@ public class BookingService {
      */
 
     private Booking buildNewBooking(BookingRequest request, User user, Room room) {
-        return Booking.builder()
+        Booking booking = Booking.builder()
                 .checkIn(request.getCheckIn())
                 .checkOut(request.getCheckOut())
                 .originalCheckOut(null)
@@ -112,5 +112,21 @@ public class BookingService {
                 .user(user)
                 .status(BookingStatus.PENDING)
                 .build();
+
+        if (request.getAdditionIds() != null && !request.getAdditionIds().isEmpty()) {
+            List<Addition> additions = additionRepository.findAllById(request.getAdditionIds());
+
+            List<BookingAddition> bookingAdditions = additions.stream()
+                    .map(addition -> BookingAddition.builder()
+                            .name(addition.getName())
+                            .price(addition.getPrice())
+                            .booking(booking)
+                            .build())
+                    .toList();
+
+            booking.setAdditions(bookingAdditions);
+        }
+
+        return booking;
     }
 }

@@ -10,6 +10,7 @@ import java.util.*;
 
 
 @Entity
+@Table(name = "booking")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -39,10 +40,6 @@ public class Booking {
     @JsonBackReference
     private User user;
 
-    @ManyToMany
-    @JoinTable(name = "booking_additions",
-            joinColumns = @JoinColumn(name = "booking_id"),
-            inverseJoinColumns = @JoinColumn(name = "addition_id"))
-    private Set<Addition> additions = new HashSet<>();
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BookingAddition> additions = new ArrayList<>();
 }
-
