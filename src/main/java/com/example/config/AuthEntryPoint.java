@@ -14,7 +14,7 @@ public class AuthEntryPoint implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest request,
                          HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
-        response.addHeader("WWW-Authenticate", "Basic realm=\"Swagger UI\"");
+        response.addHeader("WWW-Authenticate", "Basic realm=\"Crossroads SwaggerUI\"");
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage());
         response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
         response.setHeader("Pragma", "no-cache");

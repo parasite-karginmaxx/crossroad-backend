@@ -22,7 +22,6 @@ public class Room {
     private String number;
     private String description;
     private int capacity;
-    private boolean available;
     private int floor;
 
     @Column(precision = 10, scale = 2)

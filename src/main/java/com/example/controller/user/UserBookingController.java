@@ -1,6 +1,8 @@
 package com.example.controller.user;
 
 import com.example.dto.request.BookingRequest;
+import com.example.mapper.BookingMapper;
+import com.example.model.Booking;
 import com.example.model.User;
 import com.example.service.BookingService;
 import com.example.service.UserService;
@@ -23,6 +25,7 @@ public class UserBookingController {
 
     private final BookingService bookingService;
     private final UserService userService;
+    private final BookingMapper bookingMapper;
 
     @Operation(summary = "Добавление бронирования")
     @PostMapping("/add")
@@ -30,7 +33,8 @@ public class UserBookingController {
             @RequestBody BookingRequest request,
             @AuthenticationPrincipal UserDetails userDetails) {
         User user = ControllerUtils.resolveUser(userDetails, userService);
-        return ResponseEntity.ok(bookingService.createBooking(request, user));
+        Booking booking = bookingService.createBooking(request, user);
+        return ResponseEntity.ok(bookingMapper.toResponse(booking, false));
     }
 
     @Operation(summary = "Получение бронирований текущего пользователя")

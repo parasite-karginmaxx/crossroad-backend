@@ -7,13 +7,13 @@ import lombok.Data;
 @Data
 public class RegisterRequest {
 
-    @NotBlank(message = "Username is required")
+    @NotBlank(message = "Имя пользователя обязательно")
     private String username;
 
-    @NotBlank(message = "Password is required")
+    @NotBlank(message = "Пароль обязателен")
     private String password;
 
-    @NotBlank(message = "Email is required")
-    @Email(message = "Invalid email format")
+    @NotBlank(message = "Email обязателен")
+    @Email(message = "Невалидный Email формат")
     private String email;
 }
