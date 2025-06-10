@@ -1,5 +1,7 @@
 package com.example.controller.admin;
 
+import com.example.dto.response.UserResponse;
+import com.example.mapper.UserMapper;
 import com.example.model.User;
 import com.example.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,6 +21,7 @@ import java.util.List;
 public class AdminUserController {
 
     private final UserService userService;
+    private final UserMapper userMapper;
 
     @Operation(summary = "Получение пользователя по id")
     @GetMapping("/{id}")
@@ -26,10 +29,13 @@ public class AdminUserController {
         return ResponseEntity.ok(userService.getUserByIdOrThrow(id));
     }
 
-    @Operation(summary = "Получение всех пользователей")
     @GetMapping("/all")
-    public ResponseEntity<List<User>> getAllUsers() {
-        return ResponseEntity.ok(userService.getAllUsers());
+    public ResponseEntity<List<UserResponse>> getAllUsers() {
+        List<UserResponse> users = userService.getAllUsers().stream()
+                .map(userMapper::toResponse)
+                .toList();
+
+        return ResponseEntity.ok(users);
     }
 
     @Operation(summary = "Блокирование пользователя")

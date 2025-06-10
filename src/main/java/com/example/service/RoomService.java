@@ -45,7 +45,6 @@ public class RoomService {
 
         room.setDescription(request.getDescription());
         room.setCapacity(request.getCapacity());
-        room.setAvailable(request.isAvailable());
         room.setFloor(request.getFloor());
         room.setPricePerNight(request.getPricePerNight());
         room.setRoomType(roomType);
@@ -83,7 +82,6 @@ public class RoomService {
                 .number(request.getNumber())
                 .description(request.getDescription())
                 .capacity(request.getCapacity())
-                .available(request.isAvailable())
                 .floor(request.getFloor())
                 .pricePerNight(request.getPricePerNight())
                 .roomType(roomType)

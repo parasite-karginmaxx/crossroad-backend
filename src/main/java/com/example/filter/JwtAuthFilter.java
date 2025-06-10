@@ -44,11 +44,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         if ("POST".equalsIgnoreCase(method) &&
                 (uri.equals("/api/auth/refresh") || uri.equals("/api/auth/login") || uri.equals("/api/auth/admin/login"))) {
-            System.out.println("Skipping filter for auth endpoint: " + uri);
+            System.out.println("Пропуск фильтра для конечной точки аутентификации: " + uri);
             filterChain.doFilter(request, response);
             return;
         }
-
 
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
@@ -67,7 +66,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             if (!"access".equals(tokenType)) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 response.setContentType("application/json");
-                response.getWriter().write("{\"error\": \"Invalid token type. Only an access token can be used to access the API.\"}");
+                response.getWriter().write("{\"error\": \"Недопустимый тип токена. Для доступа к API можно использовать только токен доступа.\"}");
                 return;
             }
 

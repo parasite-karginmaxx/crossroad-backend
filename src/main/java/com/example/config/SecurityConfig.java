@@ -93,7 +93,7 @@ public class SecurityConfig {
         String password = env.getProperty("spring.security.user.password");
 
         if (username == null || password == null) {
-            throw new IllegalStateException("Swagger credentials are not set in application.yml");
+            throw new IllegalStateException("Учетные данные Swagger не установлены в application.yml");
         }
 
         return new InMemoryUserDetailsManager(
