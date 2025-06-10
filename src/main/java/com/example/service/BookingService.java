@@ -3,6 +3,7 @@ package com.example.service;
 import com.example.dto.request.BookingRequest;
 import com.example.dto.response.BookingResponse;
 import com.example.enums.BookingStatus;
+import com.example.mapper.BookingAdditionMapper;
 import com.example.mapper.BookingMapper;
 import com.example.model.*;
 import com.example.repository.AdditionRepository;
@@ -20,6 +21,7 @@ import java.util.NoSuchElementException;
 public class BookingService {
 
     private final BookingMapper bookingMapper;
+    private final BookingAdditionMapper bookingAdditionMapper;
     private final BookingValidator bookingValidator;
     private final BookingRepository bookingRepository;
     private final BookingStatusService statusService;
@@ -62,18 +64,19 @@ public class BookingService {
 
         BookingStatus status = booking.getStatus();
 
-        if (bookingValidator.isFinalStatus(status)) {
-            throw new IllegalStateException("Нельзя редактировать бронирование со статусом: " + status);
-        }
-
-        if (status == BookingStatus.ACTIVE) {
-            statusService.handleActiveBookingExtension(booking, request);
-        } else if (status == BookingStatus.CONFIRMED) {
-            statusService.handleConfirmedBookingModification(booking, request);
+        if (status == BookingStatus.ACTIVE || status == BookingStatus.CONFIRMED) {
+            statusService.handleBookingChangeByStatus(booking, request);
         } else {
             bookingValidator.validateDates(request.getCheckIn(), request.getCheckOut());
             booking.setCheckIn(request.getCheckIn());
             booking.setCheckOut(request.getCheckOut());
+        }
+
+        if (request.getAdditionIds() != null) {
+            booking.getAdditions().clear();
+            List<Addition> additions = additionRepository.findAllById(request.getAdditionIds());
+            List<BookingAddition> bookingAdditions = bookingAdditionMapper.mapFromAdditions(additions, booking);
+            booking.getAdditions().addAll(bookingAdditions);
         }
 
         return bookingRepository.save(booking);
@@ -115,15 +118,7 @@ public class BookingService {
 
         if (request.getAdditionIds() != null && !request.getAdditionIds().isEmpty()) {
             List<Addition> additions = additionRepository.findAllById(request.getAdditionIds());
-
-            List<BookingAddition> bookingAdditions = additions.stream()
-                    .map(addition -> BookingAddition.builder()
-                            .name(addition.getName())
-                            .price(addition.getPrice())
-                            .booking(booking)
-                            .build())
-                    .toList();
-
+            List<BookingAddition> bookingAdditions = bookingAdditionMapper.mapFromAdditions(additions, booking);
             booking.setAdditions(bookingAdditions);
         }
 

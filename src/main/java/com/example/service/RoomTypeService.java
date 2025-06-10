@@ -1,22 +1,26 @@
 package com.example.service;
 
 import com.example.dto.request.TypeRequest;
+import com.example.dto.response.RoomTypeResponse;
+import com.example.mapper.RoomTypeMapper;
 import com.example.model.RoomType;
 import com.example.repository.RoomTypeRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class RoomTypeService {
+
     private final RoomTypeRepository roomTypeRepository;
+    private final RoomTypeMapper roomTypeMapper;
 
-    public RoomTypeService(RoomTypeRepository roomTypeRepository) {
-        this.roomTypeRepository = roomTypeRepository;
-    }
-
-    public List<RoomType> getAllTypes() {
-        return roomTypeRepository.findAll();
+    public List<RoomTypeResponse> getAllTypes() {
+        return roomTypeRepository.findAll().stream()
+                .map(roomTypeMapper::toResponse)
+                .toList();
     }
 
     public RoomType createType(TypeRequest request) {

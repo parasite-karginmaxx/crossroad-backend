@@ -1,6 +1,8 @@
 package com.example.service;
 
 import com.example.dto.request.RoomRequest;
+import com.example.dto.response.RoomResponse;
+import com.example.mapper.RoomMapper;
 import com.example.model.Room;
 import com.example.model.RoomType;
 import com.example.repository.RoomRepository;
@@ -19,6 +21,7 @@ public class RoomService {
     private final RoomRepository roomRepository;
     private final RoomTypeRepository roomTypeRepository;
     private final RoomValidator roomValidator;
+    private final RoomMapper roomMapper;
 
     public Room createRoom(RoomRequest request) {
         String number = request.getNumber();
@@ -60,8 +63,10 @@ public class RoomService {
         roomRepository.deleteById(id);
     }
 
-    public List<Room> getAllRooms() {
-        return roomRepository.findAll();
+    public List<RoomResponse> getAllRooms() {
+        return roomRepository.findAll().stream()
+                .map(roomMapper::toResponse)
+                .toList();
     }
 
     public Room getRoomByIdOrThrow(Long id) {

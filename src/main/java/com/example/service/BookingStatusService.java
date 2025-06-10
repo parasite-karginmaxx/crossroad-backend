@@ -45,48 +45,65 @@ public class BookingStatusService {
     public void updateStatusManually(Booking booking, BookingStatus newStatus) {
         BookingStatus current = booking.getStatus();
 
-        if (current == BookingStatus.EXTENSION_REQUESTED || current == BookingStatus.PENDING) {
-            switch (newStatus) {
-                case CONFIRMED -> {
-                    booking.setStatus(BookingStatus.CONFIRMED);
-                    booking.setOriginalCheckOut(null);
+        switch (current) {
+            case PENDING -> {
+                switch (newStatus) {
+                    case CONFIRMED, REJECTED, CANCELLED -> booking.setStatus(newStatus);
                 }
-                case REJECTED -> {
-                    if (booking.getOriginalCheckOut() != null) {
-                        booking.setCheckOut(booking.getOriginalCheckOut());
-                    }
-                    booking.setOriginalCheckOut(null);
-                    booking.setStatus(BookingStatus.ACTIVE);
-                }
-                case CANCELLED, COMPLETED -> booking.setStatus(newStatus);
-                default -> throw new IllegalArgumentException("Неверный переход статуса");
             }
-        } else {
-            booking.setStatus(newStatus); // Прямой переход
+            case CONFIRMED -> {
+                switch (newStatus) {
+                    case REJECTED, CANCELLED -> booking.setStatus(newStatus);
+                }
+            }
+            case ACTIVE -> {
+                switch (newStatus) {
+                    case COMPLETED, EXTENSION_REQUESTED -> booking.setStatus(newStatus);
+                }
+            }
+            case EXTENSION_REQUESTED -> {
+                switch (newStatus) {
+                    case CONFIRMED -> {
+                        booking.setStatus(BookingStatus.ACTIVE);
+                        booking.setOriginalCheckOut(null);
+                    }
+                    case REJECTED -> {
+                        booking.setCheckOut(booking.getOriginalCheckOut());
+                        booking.setOriginalCheckOut(null);
+                        booking.setStatus(BookingStatus.ACTIVE);
+                    }
+                    default -> throw new IllegalArgumentException("Неверный переход статуса из: " + current + " в: " + newStatus);
+                }
+            }
+            case COMPLETED, CANCELLED, REJECTED -> throw new IllegalArgumentException("Ручное обновление из статуса " + current + " не допускается");
+            default -> throw new IllegalArgumentException("Неизвестный статус бронирования");
         }
 
         bookingRepository.save(booking);
     }
 
-    public void handleActiveBookingExtension(Booking booking, BookingRequest request) {
-        if (!request.getCheckIn().isEqual(booking.getCheckIn())) {
-            throw new IllegalStateException("Нельзя изменять дату заезда для активного бронирования");
+    public void handleBookingChangeByStatus(Booking booking, BookingRequest request) {
+        BookingStatus status = booking.getStatus();
+
+        switch (status) {
+            case ACTIVE -> {
+                if (!request.getCheckIn().isEqual(booking.getCheckIn())) {
+                    throw new IllegalStateException("Нельзя изменять дату заезда для активного бронирования");
+                }
+                if (request.getCheckOut().isAfter(booking.getCheckOut())) {
+                    booking.setOriginalCheckOut(booking.getCheckOut());
+                    booking.setCheckOut(request.getCheckOut());
+                    booking.setStatus(BookingStatus.EXTENSION_REQUESTED);
+                } else throw new IllegalStateException("Нельзя сократить период активного проживания");
+
+            }
+            case CONFIRMED -> {
+                bookingValidator.validateDates(request.getCheckIn(), request.getCheckOut());
+                booking.setCheckIn(request.getCheckIn());
+                booking.setCheckOut(request.getCheckOut());
+                booking.setStatus(BookingStatus.EXTENSION_REQUESTED);
+            }
+            default -> throw new IllegalStateException("Нельзя изменить бронирование со статусом: " + status);
         }
-
-        if (request.getCheckOut().isAfter(booking.getCheckOut())) {
-            booking.setOriginalCheckOut(booking.getCheckOut());
-            booking.setCheckOut(request.getCheckOut());
-            booking.setStatus(BookingStatus.EXTENSION_REQUESTED);
-        } else {
-            throw new IllegalStateException("Нельзя сократить период активного проживания");
-        }
-    }
-
-    public void handleConfirmedBookingModification(Booking booking, BookingRequest request) {
-        bookingValidator.validateDates(request.getCheckIn(), request.getCheckOut());
-
-        booking.setCheckIn(request.getCheckIn());
-        booking.setCheckOut(request.getCheckOut());
-        booking.setStatus(BookingStatus.PENDING);
     }
 }

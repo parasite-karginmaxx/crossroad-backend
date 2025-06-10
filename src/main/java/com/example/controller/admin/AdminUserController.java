@@ -31,24 +31,20 @@ public class AdminUserController {
 
     @GetMapping("/all")
     public ResponseEntity<List<UserResponse>> getAllUsers() {
-        List<UserResponse> users = userService.getAllUsers().stream()
-                .map(userMapper::toResponse)
-                .toList();
-
-        return ResponseEntity.ok(users);
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 
     @Operation(summary = "Блокирование пользователя")
     @PostMapping("/{id}/block")
     public ResponseEntity<String> blockUser(@PathVariable Long id) {
         userService.blockUserById(id);
-        return ResponseEntity.ok("Пользователь заблокирован");
+        return ResponseEntity.ok("Пользователь #" + id + "заблокирован");
     }
 
     @Operation(summary = "Удаление пользователя")
     @DeleteMapping("/{id}/delete")
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
         userService.deleteUserById(id);
-        return ResponseEntity.ok("Пользователь удалён");
+        return ResponseEntity.ok("Пользователь #" + id + "удалён");
     }
 }

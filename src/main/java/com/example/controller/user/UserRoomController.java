@@ -1,6 +1,7 @@
 package com.example.controller.user;
 
-import com.example.model.Room;
+import com.example.dto.response.RoomResponse;
+import com.example.mapper.RoomMapper;
 import com.example.service.RoomService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -17,16 +18,17 @@ import java.util.List;
 public class UserRoomController {
 
     private final RoomService roomService;
+    private final RoomMapper roomMapper;
 
     @Operation(summary = "Получение всех комнат")
     @GetMapping("/all")
-    public ResponseEntity<List<Room>> getAllRooms() {
+    public ResponseEntity<List<RoomResponse>> getAllRooms() {
         return ResponseEntity.ok(roomService.getAllRooms());
     }
 
     @Operation(summary = "Получение комнаты по ID")
     @GetMapping("/{id}")
-    public ResponseEntity<Room> getRoomById(@PathVariable Long id) {
-        return ResponseEntity.ok(roomService.getRoomByIdOrThrow(id));
+    public ResponseEntity<RoomResponse> getRoomById(@PathVariable Long id) {
+        return ResponseEntity.ok(roomMapper.toResponse(roomService.getRoomByIdOrThrow(id)));
     }
 }

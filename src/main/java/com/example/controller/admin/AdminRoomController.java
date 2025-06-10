@@ -27,7 +27,7 @@ public class AdminRoomController {
     @Operation(summary = "Обновление комнаты")
     @PutMapping("/{id}/update")
     public ResponseEntity<String> updateRoom(@PathVariable Long id, @RequestBody RoomRequest request) {
-        return ResponseEntity.ok("Комната успешно обновлена\n" + roomService.updateRoom(id, request));
+        return ResponseEntity.ok("Комната #" + id + "успешно обновлена\n" + roomService.updateRoom(id, request));
     }
 
     @Operation(summary = "Удаление комнаты")

@@ -1,6 +1,5 @@
 package com.example.dto.response;
 
-import com.example.dto.AdditionResponse;
 import com.example.enums.BookingStatus;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
