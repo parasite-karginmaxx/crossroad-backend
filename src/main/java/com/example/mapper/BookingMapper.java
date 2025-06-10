@@ -1,6 +1,6 @@
 package com.example.mapper;
 
-import com.example.dto.AdditionResponse;
+import com.example.dto.response.AdditionResponse;
 import com.example.dto.response.BookingResponse;
 import com.example.model.Booking;
 import com.example.model.User;

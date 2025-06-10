@@ -1,5 +1,6 @@
 package com.example.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,5 +28,6 @@ public class BookingAddition {
 
     @ManyToOne
     @JoinColumn(name = "booking_id", nullable = false)
+    @JsonBackReference
     private Booking booking;
 }

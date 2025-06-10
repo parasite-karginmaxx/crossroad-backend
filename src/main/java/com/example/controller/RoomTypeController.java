@@ -1,6 +1,8 @@
 package com.example.controller;
 
 import com.example.dto.request.TypeRequest;
+import com.example.dto.response.RoomTypeResponse;
+import com.example.mapper.RoomTypeMapper;
 import com.example.model.RoomType;
 import com.example.service.RoomTypeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,6 +22,7 @@ import java.util.List;
 public class RoomTypeController {
 
     private final RoomTypeService roomTypeService;
+    private final RoomTypeMapper roomTypeMapper;
 
     @Operation(summary = "Добавление типа комнаты")
     @PostMapping("/add")
@@ -31,7 +34,7 @@ public class RoomTypeController {
 
     @Operation(summary = "Получение всех типов комнат")
     @GetMapping("/all")
-    public ResponseEntity<List<RoomType>> getAllTypes() {
+    public ResponseEntity<List<RoomTypeResponse>> getAllTypes() {
         return ResponseEntity.ok(roomTypeService.getAllTypes());
     }
 

@@ -1,7 +1,9 @@
 package com.example.service;
 
 import com.example.dto.request.RegisterRequest;
+import com.example.dto.response.UserResponse;
 import com.example.enums.UserStatus;
+import com.example.mapper.UserMapper;
 import com.example.model.Role;
 import com.example.model.User;
 import com.example.model.UserProfile;
@@ -28,6 +30,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final EmailVerificationService emailVerificationService;
     private final UserValidator userValidator;
+    private final UserMapper userMapper;
 
     public User saveUser(RegisterRequest request, String roleName) {
         userValidator.validateRegistration(request);
@@ -82,8 +85,10 @@ public class UserService {
         return userRepository.findByUsername(username);
     }
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserResponse> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(userMapper::toResponse)
+                .toList();
     }
 
     public void deleteUserById(Long id) {
