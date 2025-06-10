@@ -4,9 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
-import java.util.*;
-
 @Entity
+@Table(name = "role")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

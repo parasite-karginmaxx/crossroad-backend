@@ -1,17 +1,21 @@
 package com.example.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "addition")
+@Table(name = "booking_addition")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Addition {
+public class BookingAddition {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,4 +24,8 @@ public class Addition {
 
     @Column(precision = 10, scale = 2)
     private BigDecimal price;
+
+    @ManyToOne
+    @JoinColumn(name = "booking_id", nullable = false)
+    private Booking booking;
 }

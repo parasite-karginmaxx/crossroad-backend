@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "email_verification_token")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

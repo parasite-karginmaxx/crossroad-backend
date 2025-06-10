@@ -1,9 +1,12 @@
 package com.example.mapper;
 
+import com.example.dto.AdditionResponse;
 import com.example.dto.response.BookingResponse;
 import com.example.model.Booking;
 import com.example.model.User;
 import org.springframework.stereotype.Component;
+
+import java.util.stream.Collectors;
 
 @Component
 public class BookingMapper {
@@ -30,6 +33,12 @@ public class BookingMapper {
                 .checkIn(booking.getCheckIn())
                 .checkOut(booking.getCheckOut())
                 .status(booking.getStatus())
+                .additions(booking.getAdditions().stream()
+                        .map(a -> AdditionResponse.builder()
+                                .name(a.getName())
+                                .price(a.getPrice())
+                                .build())
+                        .collect(Collectors.toList()))
                 .build();
     }
 

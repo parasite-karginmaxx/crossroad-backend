@@ -1,8 +1,8 @@
 package com.example.repository;
 
-import com.example.model.Type;
+import com.example.model.RoomType;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface TypeRepository extends JpaRepository<Type, Long> {
+public interface RoomTypeRepository extends JpaRepository<RoomType, Long> {
     boolean existsByName(String name);
 }
