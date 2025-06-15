@@ -40,8 +40,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         final String uri = request.getRequestURI();
         final String method = request.getMethod();
 
-        System.out.println("🔎 REQUEST URI: " + uri + " | METHOD: " + method);
-
         if ("POST".equalsIgnoreCase(method) &&
                 (uri.equals("/api/auth/refresh") || uri.equals("/api/auth/login") || uri.equals("/api/auth/admin/login"))) {
             System.out.println("Пропуск фильтра для конечной точки аутентификации: " + uri);
