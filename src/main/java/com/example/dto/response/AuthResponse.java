@@ -1,4 +1,3 @@
-// AuthResponse.java
 package com.example.dto.response;
 
 import lombok.Builder;

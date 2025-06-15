@@ -1,4 +1,3 @@
-// AuthRequest.java
 package com.example.dto.request;
 
 import lombok.Data;
